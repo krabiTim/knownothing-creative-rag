@@ -1,23 +1,106 @@
-version: '3.9'
+
 services:
+  # knowNothing Creative RAG API
+  knownothing-api:
+    build: 
+      context: ../..
+      dockerfile: Dockerfile
+      target: production
+    container_name: knownothing-api
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=postgresql://creative_user:creative_pass@postgres:5432/creative_rag
+      - REDIS_URL=redis://redis:6379/0
+      - OLLAMA_URL=http://ollama:11434
+      - CUDA_VISIBLE_DEVICES=0
+    volumes:
+      - ../../data:/app/data
+      - ../../logs:/app/logs
+      - model_cache:/app/.cache
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - knownothing-network
+
+  # Creative RAG UI (Gradio)
+  knownothing-ui:
+    build:
+      context: ../..
+      dockerfile: src/ui/Dockerfile
+    container_name: knownothing-ui
+    ports:
+      - "7860:7860"
+    environment:
+      - API_URL=http://knownothing-api:8000
+      - GRADIO_SERVER_NAME=0.0.0.0
+      - GRADIO_SERVER_PORT=7860
+      - GRADIO_THEME=soft
+    depends_on:
+      - knownothing-api
+    restart: unless-stopped
+    networks:
+      - knownothing-network
+
+  # PostgreSQL Database
   postgres:
-    image: postgres:14
+    image: postgres:14-alpine
+    container_name: knownothing-postgres
     environment:
       POSTGRES_DB: creative_rag
       POSTGRES_USER: creative_user
       POSTGRES_PASSWORD: creative_pass
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U creative_user -d creative_rag"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - knownothing-network
 
+  # Redis Cache
   redis:
     image: redis:7-alpine
+    container_name: knownothing-redis
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - knownothing-network
 
+  # Ollama AI Models (GPU-accelerated)
   ollama:
     image: ollama/ollama:latest
+    container_name: knownothing-ollama
     ports:
       - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_ORIGINS=*
+      - OLLAMA_HOST=0.0.0.0
     deploy:
       resources:
         reservations:
@@ -25,3 +108,20 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - knownothing-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  ollama_data:
+    driver: local
+  model_cache:
+    driver: local
+
+networks:
+  knownothing-network:
+    driver: bridge

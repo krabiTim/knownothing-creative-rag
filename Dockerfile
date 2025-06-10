@@ -1,5 +1,5 @@
 # Multi-stage build for knowNothing Creative RAG
-FROM python:3.11-slim as base
+FROM python:3.11-slim AS base
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -29,11 +29,10 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock* ./
 
 # Production stage
-FROM base as production
+FROM base AS production
 
 # Install dependencies
-RUN poetry install --only=main -     && rm -rf /opt/poetry-cache
-# disable venv creation, skip dev-deps, remove cache
+# Install dependencies: disable Poetry venv, skip dev deps, clean cache
 RUN poetry config virtualenvs.create false \
     && poetry install --no-dev --no-interaction --no-ansi \
     && rm -rf /opt/poetry-cache
