@@ -1,0 +1,27 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: creative_rag
+      POSTGRES_USER: creative_user
+      POSTGRES_PASSWORD: creative_pass
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

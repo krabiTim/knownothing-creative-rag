@@ -1,3 +1,8 @@
+#!/bin/bash
+
+echo "📝 Creating knowNothing Creative RAG README..."
+
+cat > README.md << 'README_END'
 # 🧠 knowNothing Creative RAG
 
 > **AI superpowers for artists who know nothing about AI**
@@ -144,3 +149,7 @@ MIT License - Use it, modify it, share it, make incredible art with it!
 **🧠 knowNothing Creative RAG: Where AI meets Art, and Magic Happens**
 
 *Built for artists who want AI superpowers without the PhD* 🎨✨
+README_END
+
+echo "✅ README.md created successfully!"
+echo "📄 File size: $(wc -l < README.md) lines"
