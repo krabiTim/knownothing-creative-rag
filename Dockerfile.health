@@ -1,0 +1,10 @@
+FROM python:3.11-slim
+WORKDIR /app
+
+# Install only what we need
+RUN pip install fastapi uvicorn
+
+COPY src/health.py .
+
+EXPOSE 8001
+CMD ["uvicorn", "health:app", "--host", "0.0.0.0", "--port", "8001"]
