@@ -48,3 +48,13 @@ if __name__ == "__main__":
         reload=True,
         log_level="info"
     )
+
+# Stage 2: Image Analysis
+try:
+    from .api.image_analysis import router as image_analysis_router
+    app.include_router(image_analysis_router)
+    print("✅ Image analysis endpoints registered")
+except ImportError as e:
+    print(f"⚠️ Image analysis module not loaded: {e}")
+except Exception as e:
+    print(f"❌ Error loading image analysis module: {e}")
