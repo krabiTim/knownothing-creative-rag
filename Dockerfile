@@ -32,12 +32,11 @@ COPY pyproject.toml poetry.lock* ./
 FROM base as production
 
 # Install dependencies
-RUN poetry install --only=main \
--     && rm -rf /opt/poetry-cache
-# disable venv creation and speed up install
+RUN poetry install --only=main -     && rm -rf /opt/poetry-cache
+# disable venv creation, skip dev-deps, remove cache
 RUN poetry config virtualenvs.create false \
-+     && poetry install --no-dev --no-interaction --no-ansi \
-+     && rm -rf /opt/poetry-cache
+    && poetry install --no-dev --no-interaction --no-ansi \
+    && rm -rf /opt/poetry-cache
 
 # Create non-root user for security
 RUN groupadd -r knownothing && useradd -r -g knownothing knownothing
