@@ -1,5 +1,5 @@
 """
-Stage 4: Text Extraction API Endpoints
+Stage 4: Text Extraction API Endpoints (ROUTING FIXED)
 RESTful API for extracting and managing text from creative documents
 Part of knowNothing Creative RAG
 """
@@ -19,6 +19,84 @@ router = APIRouter(prefix="/api/text", tags=["Text Extraction"])
 
 # Initialize text extractor
 text_extractor = TextExtractor()
+
+# CRITICAL FIX: Put specific routes BEFORE parameterized routes
+# Statistics endpoint MUST come before /{document_id} route
+
+@router.get("/stats")
+async def get_text_extraction_stats() -> Dict[str, Any]:
+    """
+    Get text extraction statistics
+    
+    Shows extraction progress and system capabilities!
+    """
+    logger.info("📊 Getting text extraction statistics")
+    
+    try:
+        stats = await text_extractor.get_text_extraction_status()
+        
+        return {
+            "success": True,
+            "message": "📊 Text extraction statistics retrieved",
+            "statistics": stats,
+            # Compatibility fields at root level for tests
+            "total_documents": stats.get("total_documents", 0),
+            "extracted_documents": stats.get("extracted_documents", 0),
+            "extraction_percentage": stats.get("extraction_percentage", 0),
+            "recommendations": [
+                "PDF files work best with clear, text-based content",
+                "DOCX files provide the most accurate extraction",
+                "TXT files are processed instantly with perfect accuracy"
+            ] if stats.get("total_documents", 0) > 0 else [
+                "Upload documents to see extraction statistics",
+                "Supported formats: PDF, DOCX, TXT",
+                "Text extraction enables search and AI analysis"
+            ],
+            "capabilities": {
+                "formats_supported": ["TXT", "PDF (if PyPDF2 installed)", "DOCX (if python-docx installed)"],
+                "features": [
+                    "Automatic text cleaning and normalization",
+                    "Word and character counting",
+                    "Page counting for PDFs",
+                    "Search within extracted text",
+                    "Multiple encoding support for text files"
+                ]
+            },
+            "timestamp": datetime.utcnow().isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"❌ Failed to get extraction stats: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"🔧 Couldn't get extraction stats: {str(e)}"
+        )
+
+@router.post("/extract-all")
+async def extract_all_documents() -> Dict[str, Any]:
+    """
+    Extract text from all documents that don't have text extracted yet
+    
+    Batch process all your creative documents!
+    """
+    logger.info("📄 Starting batch text extraction")
+    
+    try:
+        return {
+            "success": True,
+            "message": "🚧 Batch extraction feature coming soon!",
+            "recommendation": "For now, extract text from individual documents using POST /api/text/extract/{document_id}",
+            "timestamp": datetime.utcnow().isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"❌ Batch extraction failed: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"🔧 Batch extraction failed: {str(e)}"
+        )
+
+# Document-specific routes come AFTER static routes
 
 @router.post("/extract/{document_id}")
 async def extract_text_from_document(document_id: str) -> Dict[str, Any]:
@@ -73,7 +151,6 @@ async def extract_text_from_document(document_id: str) -> Dict[str, Any]:
             )
             
     except HTTPException:
-        # Re-raise HTTP exceptions
         raise
         
     except Exception as e:
@@ -120,6 +197,9 @@ async def get_extracted_text(
                     "extraction_date": text_data["extraction_date"],
                     "processing_notes": text_data["processing_notes"]
                 },
+                # Compatibility fields at root level for tests
+                "word_count": text_data["word_count"],
+                "extraction_method": text_data["method"],
                 "timestamp": datetime.utcnow().isoformat()
             }
         
@@ -158,7 +238,6 @@ async def get_extracted_text(
             }
             
     except HTTPException:
-        # Re-raise HTTP exceptions
         raise
         
     except Exception as e:
@@ -177,11 +256,6 @@ async def search_in_document(
 ) -> Dict[str, Any]:
     """
     Search for text within a document
-    
-    - **document_id**: ID of document to search
-    - **query**: Text to search for
-    - **case_sensitive**: Whether search should be case-sensitive
-    - **whole_words**: Whether to match whole words only
     
     Find specific content in your creative documents!
     """
@@ -246,7 +320,6 @@ async def search_in_document(
         }
         
     except HTTPException:
-        # Re-raise HTTP exceptions
         raise
         
     except Exception as e:
@@ -254,75 +327,4 @@ async def search_in_document(
         raise HTTPException(
             status_code=500,
             detail=f"🔧 Search failed: {str(e)}"
-        )
-
-@router.get("/stats")
-async def get_text_extraction_stats() -> Dict[str, Any]:
-    """
-    Get text extraction statistics
-    
-    Shows extraction progress and system capabilities!
-    """
-    logger.info("📊 Getting text extraction statistics")
-    
-    try:
-        stats = await text_extractor.get_text_extraction_status()
-        
-        return {
-            "success": True,
-            "message": "📊 Text extraction statistics retrieved",
-            "statistics": stats,
-            "recommendations": [
-                "PDF files work best with clear, text-based content",
-                "DOCX files provide the most accurate extraction",
-                "TXT files are processed instantly with perfect accuracy"
-            ] if stats.get("total_documents", 0) > 0 else [
-                "Upload documents to see extraction statistics",
-                "Supported formats: PDF, DOCX, TXT",
-                "Text extraction enables search and AI analysis"
-            ],
-            "capabilities": {
-                "formats_supported": ["TXT", "PDF (if PyPDF2 installed)", "DOCX (if python-docx installed)"],
-                "features": [
-                    "Automatic text cleaning and normalization",
-                    "Word and character counting",
-                    "Page counting for PDFs",
-                    "Search within extracted text",
-                    "Multiple encoding support for text files"
-                ]
-            },
-            "timestamp": datetime.utcnow().isoformat()
-        }
-        
-    except Exception as e:
-        logger.error(f"❌ Failed to get extraction stats: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"🔧 Couldn't get extraction stats: {str(e)}"
-        )
-
-@router.post("/extract-all")
-async def extract_all_documents() -> Dict[str, Any]:
-    """
-    Extract text from all documents that don't have text extracted yet
-    
-    Batch process all your creative documents!
-    """
-    logger.info("📄 Starting batch text extraction")
-    
-    try:
-        # This would be implemented to process all unextracted documents
-        # For now, return a helpful message
-        return {
-            "success": True,
-            "message": "🚧 Batch extraction feature coming soon!",
-            "recommendation": "For now, extract text from individual documents using POST /api/text/extract/{document_id}",
-            "timestamp": datetime.utcnow().isoformat()
-        }
-        
-    except Exception as e:
-        logger.error(f"❌ Batch extraction failed: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"🔧 Batch extraction failed: {str(e)}"
         )
