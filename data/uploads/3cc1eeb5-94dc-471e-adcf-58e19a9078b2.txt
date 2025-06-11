@@ -1,0 +1,27 @@
+# Creative Project: The Digital Artist
+
+## Character Profiles
+- **Maya**: A struggling digital artist seeking inspiration
+- **Alex**: An AI researcher who becomes Maya's mentor
+- **River**: A mysterious figure from Maya's past
+
+## Scene Breakdown
+
+### Scene 1: The Blank Canvas
+**Location**: Maya's cluttered studio apartment
+**Time**: Late night
+**Mood**: Frustration, creative block
+
+Maya stares at her digital canvas, cursor blinking mockingly. Coffee cups and sketches litter her desk. The blue glow of her monitor reflects her exhaustion.
+
+## Visual Concepts
+- **Color Palette**: Deep blues contrasted with warm oranges
+- **Lighting Style**: Dramatic shadows mixed with soft natural light
+- **Composition**: Rule of thirds with dynamic diagonal movements
+
+## Themes
+- The intersection of technology and creativity
+- Overcoming artistic blocks through human connection
+- The evolution of artistic expression in the digital age
+
+This script explores how AI can enhance rather than replace human creativity.

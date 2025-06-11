@@ -1,0 +1,21 @@
+Research Notes: Color Theory in Digital Art
+
+Abstract:
+This document explores the psychological impact of color choices in digital artwork and how artists can use color theory to enhance emotional storytelling.
+
+Key Findings:
+1. Blue tones evoke calm and introspection
+2. Orange creates energy and warmth
+3. High contrast increases visual impact
+4. Color temperature affects viewer engagement
+
+Applications for Digital Artists:
+- Use cool colors for contemplative scenes
+- Warm colors for action and energy
+- Strategic contrast for focal points
+- Temperature shifts for emotional transitions
+
+References:
+- Itten, Johannes. "The Art of Color" (1961)
+- Adobe Color Theory Guidelines (2023)
+- Digital Arts Magazine, Color Psychology Issue (2024)

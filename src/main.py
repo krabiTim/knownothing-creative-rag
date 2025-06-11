@@ -127,3 +127,14 @@ if __name__ == "__main__":
         reload=True,
         log_level="info"
     )
+
+# Stage 4: Text Extraction Integration
+try:
+    from .api.text_extraction_api import router as text_extraction_router
+    app.include_router(text_extraction_router)
+    logger.info("✅ Text extraction endpoints registered")
+except ImportError as e:
+    logger.warning(f"⚠️ Text extraction module not loaded: {e}")
+    logger.info("💡 Install dependencies: poetry add PyPDF2 python-docx chardet")
+except Exception as e:
+    logger.error(f"❌ Error loading text extraction module: {e}")

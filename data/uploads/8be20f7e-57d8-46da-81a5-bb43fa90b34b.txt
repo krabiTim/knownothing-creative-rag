@@ -1,0 +1,81 @@
+# THE DIGITAL ARTIST
+## A Short Film Script
+
+**FADE IN:**
+
+**EXT. CITY STREET - DAY**
+
+Maya, a young digital artist in her 20s, walks through a bustling street carrying a worn laptop bag. Her eyes scan the urban landscape, looking for inspiration.
+
+**MAYA (V.O.)**
+Every artist faces the blank canvas. But what happens when the canvas is infinite... and empty?
+
+**INT. MAYA'S APARTMENT - NIGHT**
+
+A cramped studio apartment. Digital art prints cover the walls. Maya sits before her computer, cursor blinking on an empty digital canvas.
+
+**MAYA**
+(frustrated)
+Come on... something. Anything.
+
+She closes her laptop in defeat.
+
+**INT. COFFEE SHOP - NEXT DAY**
+
+Maya sits alone, sketching in a notebook. ALEX (30s), a tech researcher, approaches.
+
+**ALEX**
+Mind if I sit? That's beautiful work.
+
+**MAYA**
+(looking up)
+Oh, thanks. Just trying to find my voice.
+
+**ALEX**
+What if I told you there was a way to amplify that voice?
+
+Alex pulls out a tablet showing an AI art collaboration tool.
+
+**ALEX (CONT'D)**
+This isn't about replacing creativity. It's about understanding it, expanding it.
+
+**MAYA**
+(intrigued)
+Show me.
+
+**MONTAGE - MAYA AND AI COLLABORATION**
+
+- Maya uploads her sketches
+- The AI analyzes her style, color preferences
+- Together, they create something neither could achieve alone
+- Maya's confidence grows with each iteration
+
+**INT. MAYA'S APARTMENT - WEEKS LATER**
+
+Maya's apartment is transformed. New artworks line the walls. She works confidently, the AI as her creative partner.
+
+**MAYA (V.O.)**
+The blank canvas isn't empty anymore. It's full of possibility.
+
+**FADE OUT.**
+
+**THE END**
+
+---
+
+**PRODUCTION NOTES:**
+- Runtime: Approximately 8-10 minutes
+- Visual Style: Modern, clean cinematography with warm color grading
+- Themes: Human-AI collaboration, overcoming creative blocks, technology as enabler
+- Target Audience: Creative professionals, tech enthusiasts, film festival circuits
+
+**CHARACTER BREAKDOWN:**
+- MAYA: Lead character, represents struggling artists
+- ALEX: Catalyst character, represents possibility and innovation
+- AI SYSTEM: Visual representation through UI/screens
+
+**TECHNICAL REQUIREMENTS:**
+- Computer screens with custom AI interface
+- Digital art creation scenes
+- Urban and intimate interior locations
+- Color palette: Blues (technology) transitioning to warm oranges (creativity)
