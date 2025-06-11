@@ -13,7 +13,6 @@ httpx = "^0.27.0"
 pydantic = "^2.6.0"
 pydantic-settings = "^2.2.0"
 python-multipart = "^0.0.9"
-aiofiles = "^23.2.1"
 torch = "*"
 transformers = "*"
 sentence-transformers = "*"
@@ -24,6 +23,7 @@ asyncpg = "*"
 sqlalchemy = "*"
 loguru = "*"
 rich = "*"
+aiofiles = "^24.1.0"
 
 [tool.poetry.dev-dependencies]
 black = "^24.0.0"
@@ -35,3 +35,4 @@ pytest-asyncio = "^0.23.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+aiofiles = "^23.2.1"
