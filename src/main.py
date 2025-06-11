@@ -138,3 +138,12 @@ except ImportError as e:
     logger.info("💡 Install dependencies: poetry add PyPDF2 python-docx chardet")
 except Exception as e:
     logger.error(f"❌ Error loading text extraction module: {e}")
+# Stage 5: Semantic Search Integration
+try:
+    from .api.semantic_search_api import router as semantic_search_router
+    app.include_router(semantic_search_router)
+    logger.info("✅ Semantic search endpoints registered")
+except ImportError as e:
+    logger.warning(f"⚠️ Semantic search module not loaded: {e}")
+except Exception as e:
+    logger.error(f"❌ Error loading semantic search module: {e}")
