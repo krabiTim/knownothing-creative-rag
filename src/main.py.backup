@@ -148,12 +148,12 @@ except ImportError as e:
 except Exception as e:
     logger.error(f"❌ Error loading semantic search module: {e}")
 
-# Stage 6: Simple HTML UI Integration
+# Stage 6: Premium Dark UI Integration
 try:
-    from .ui.simple_html_ui import router as html_ui_router
-    app.include_router(html_ui_router)
-    logger.info("✅ Simple HTML UI endpoints registered")
+    from .ui.premium_dark_ui import router as premium_ui_router
+    app.include_router(premium_ui_router)
+    logger.info("✅ Premium Dark UI endpoints registered")
 except ImportError as e:
-    logger.warning(f"⚠️ Simple HTML UI module not loaded: {e}")
+    logger.warning(f"⚠️ Premium Dark UI module not loaded: {e}")
 except Exception as e:
-    logger.error(f"❌ Error loading Simple HTML UI module: {e}")
+    logger.error(f"❌ Error loading Premium Dark UI module: {e}")
