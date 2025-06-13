@@ -262,3 +262,15 @@ logger.info("🎉 knowNothing Creative RAG - All features integrated!")
 if __name__ == "__main__":
     logger.info("🚀 Starting knowNothing Creative RAG - Full System...")
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+# Stage 5: Embeddings & Semantic Search
+try:
+    logger.info("🧪 Loading Stage 5: Embeddings & Semantic Search...")
+    from .api.embeddings_api import router as embeddings_router
+    app.include_router(embeddings_router, tags=["Embeddings", "Semantic Search"])
+    logger.info("✅ Stage 5: Embeddings & Semantic Search loaded and active")
+except ImportError as e:
+    logger.warning(f"⚠️ Stage 5: Embeddings not loaded: {e}")
+    logger.info("📝 Install dependencies: poetry add sentence-transformers chromadb")
+except Exception as e:
+    logger.error(f"❌ Error loading Stage 5: {e}")
