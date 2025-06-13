@@ -234,7 +234,7 @@ logger.info("🚀 Loading all working features...")
 try:
     logger.info("🧪 Loading Stage 1: AI Ping...")
     from .api.ai_ping import router as ai_ping_router
-    app.include_router(ai_ping_router, tags=["AI"])
+    app.include_router(ai_ping_router, prefix="/api", tags=["AI"])
     logger.info("✅ Stage 1: AI Ping loaded and active")
 except Exception as e:
     logger.warning(f"⚠️ Stage 1: AI Ping failed to load: {e}")
@@ -252,7 +252,7 @@ except Exception as e:
 try:
     logger.info("🧪 Loading Stage 4: Text Extraction...")
     from .api.text_extraction_api import router as text_router
-    app.include_router(text_router, tags=["Text"])
+    app.include_router(text_router, prefix="/api", tags=["Text"])
     logger.info("✅ Stage 4: Text Extraction loaded and active")
 except Exception as e:
     logger.warning(f"⚠️ Stage 4: Text Extraction failed to load: {e}")
@@ -262,15 +262,3 @@ logger.info("🎉 knowNothing Creative RAG - All features integrated!")
 if __name__ == "__main__":
     logger.info("🚀 Starting knowNothing Creative RAG - Full System...")
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
-# Stage 5: Embeddings & Semantic Search
-try:
-    logger.info("🧪 Loading Stage 5: Embeddings & Semantic Search...")
-    from .api.embeddings_api import router as embeddings_router
-    app.include_router(embeddings_router, tags=["Embeddings", "Semantic Search"])
-    logger.info("✅ Stage 5: Embeddings & Semantic Search loaded and active")
-except ImportError as e:
-    logger.warning(f"⚠️ Stage 5: Embeddings not loaded: {e}")
-    logger.info("📝 Install dependencies: poetry add sentence-transformers chromadb")
-except Exception as e:
-    logger.error(f"❌ Error loading Stage 5: {e}")
