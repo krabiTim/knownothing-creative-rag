@@ -234,7 +234,7 @@ logger.info("🚀 Loading all working features...")
 try:
     logger.info("🧪 Loading Stage 1: AI Ping...")
     from .api.ai_ping import router as ai_ping_router
-    app.include_router(ai_ping_router, tags=["AI"])
+    app.include_router(ai_ping_router, prefix="/api", tags=["AI"])
     logger.info("✅ Stage 1: AI Ping loaded and active")
 except Exception as e:
     logger.warning(f"⚠️ Stage 1: AI Ping failed to load: {e}")
@@ -252,7 +252,7 @@ except Exception as e:
 try:
     logger.info("🧪 Loading Stage 4: Text Extraction...")
     from .api.text_extraction_api import router as text_router
-    app.include_router(text_router, tags=["Text"])
+    app.include_router(text_router, prefix="/api", tags=["Text"])
     logger.info("✅ Stage 4: Text Extraction loaded and active")
 except Exception as e:
     logger.warning(f"⚠️ Stage 4: Text Extraction failed to load: {e}")
