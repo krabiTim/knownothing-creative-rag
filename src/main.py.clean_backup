@@ -1,0 +1,100 @@
+"""
+Ultra-minimal main.py to avoid segfaults
+Only the absolute essentials
+"""
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
+import uvicorn
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Create FastAPI app
+app = FastAPI(
+    title="knowNothing Creative RAG - Safe Mode",
+    description="Minimal safe server to avoid segfaults",
+    version="1.0.0-safe"
+)
+
+@app.get("/")
+async def root():
+    """Root endpoint"""
+    return {
+        "name": "knowNothing Creative RAG",
+        "version": "1.0.0-safe",
+        "status": "running in safe mode",
+        "message": "Segfault-free operation"
+    }
+
+@app.get("/health")
+async def health():
+    """Health check"""
+    return {"status": "healthy", "mode": "safe"}
+
+@app.get("/ui", response_class=HTMLResponse)
+async def ui():
+    """Minimal UI"""
+    return HTMLResponse(content="""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>🧠 knowNothing Creative RAG - Safe Mode</title>
+        <style>
+            body { 
+                font-family: Arial, sans-serif; 
+                max-width: 800px; 
+                margin: 2rem auto; 
+                padding: 2rem;
+                background: #0f0f0f;
+                color: white;
+            }
+            .header { 
+                text-align: center; 
+                margin-bottom: 2rem;
+                padding: 2rem;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 10px;
+            }
+            .status {
+                background: #1a1a1a;
+                padding: 1rem;
+                border-radius: 8px;
+                margin: 1rem 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>🧠 knowNothing Creative RAG</h1>
+            <p>Safe Mode - Segfault Protection Active</p>
+        </div>
+        
+        <div class="status">
+            <h2>🛡️ System Status</h2>
+            <p>✅ Server running without segfaults</p>
+            <p>🔧 Safe mode prevents crashes while we debug</p>
+            <p>🎯 Ready for careful feature addition</p>
+        </div>
+        
+        <div class="status">
+            <h2>🔗 Available Endpoints</h2>
+            <p>• <a href="/health" style="color: #64b5f6;">/health</a> - System health check</p>
+            <p>• <a href="/docs" style="color: #64b5f6;">/docs</a> - API documentation</p>
+        </div>
+        
+        <div class="status">
+            <h2>📋 Next Steps</h2>
+            <p>1. Confirm this safe server works</p>
+            <p>2. Add features one import at a time</p>
+            <p>3. Test after each addition</p>
+            <p>4. Identify the exact segfault cause</p>
+        </div>
+    </body>
+    </html>
+    """)
+
+if __name__ == "__main__":
+    logger.info("🛡️ Starting knowNothing Creative RAG in safe mode...")
+    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -1,0 +1,119 @@
+"""
+Ultra-Minimal Safe Server
+No complex imports that might cause segfaults
+"""
+
+import logging
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+
+# Basic logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Create minimal FastAPI app
+app = FastAPI(title="knowNothing Creative RAG - Safe Mode")
+
+# Add CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/")
+async def root():
+    return {"status": "working", "mode": "safe", "message": "Server is running safely"}
+
+@app.get("/health")
+async def health():
+    return {"status": "healthy", "mode": "safe_minimal"}
+
+# Ultra-minimal UI
+@app.get("/ui", response_class=HTMLResponse)
+async def minimal_ui():
+    return HTMLResponse("""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>knowNothing Creative RAG - Safe Mode</title>
+        <style>
+            body { 
+                font-family: Arial, sans-serif; 
+                background: #2a2a2a; 
+                color: white; 
+                padding: 20px; 
+                text-align: center;
+            }
+            .safe-mode {
+                background: #4a4a2d;
+                color: #f0e68c;
+                padding: 20px;
+                border-radius: 8px;
+                margin: 20px 0;
+                border: 2px solid #7c7c59;
+            }
+            .working {
+                background: #2d4a2d;
+                color: #90ee90;
+                padding: 15px;
+                border-radius: 6px;
+                margin: 10px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>🧠 knowNothing Creative RAG</h1>
+        <div class="safe-mode">
+            <h2>⚠️ SAFE MODE ACTIVE</h2>
+            <p>Server recovered from segmentation fault</p>
+            <p>Running minimal configuration to ensure stability</p>
+        </div>
+        
+        <div class="working">
+            <h3>✅ SERVER STATUS: WORKING</h3>
+            <p>Basic server functionality restored</p>
+        </div>
+        
+        <div style="background: #353535; padding: 20px; border-radius: 8px; margin-top: 20px;">
+            <h3>🔗 Available Endpoints</h3>
+            <p><a href="/health" style="color: #87ceeb;">Health Check</a></p>
+            <p><a href="/" style="color: #87ceeb;">Root Status</a></p>
+        </div>
+        
+        <div style="margin-top: 30px; padding: 15px; border-top: 1px solid #555;">
+            <p>🛡️ Safe mode ensures server stability</p>
+            <p>Will gradually add features back once stable</p>
+        </div>
+    </body>
+    </html>
+    """)
+
+# Try to add Stage 1 (AI ping) very carefully
+try:
+    logger.info("🧪 Attempting to load Stage 1 (AI ping)...")
+    from .api.ai_ping import router as ai_ping_router
+    app.include_router(ai_ping_router, prefix="/api")
+    logger.info("✅ Stage 1: AI ping loaded safely")
+except Exception as e:
+    logger.warning(f"⚠️ Stage 1 skipped due to error: {e}")
+
+# Skip all other stages for now to avoid segfaults
+logger.info("⚠️ Stages 2-4: Temporarily disabled for stability")
+logger.info("🛡️ Safe mode: Minimal server running")
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+# Stage 3: Document Storage (Re-adding carefully)
+try:
+    logger.info("🧪 Attempting to load Stage 3 (document storage)...")
+    from .api.document_upload import router as doc_router
+    app.include_router(doc_router, prefix="/api")
+    logger.info("✅ Stage 3: Document storage loaded safely")
+except Exception as e:
+    logger.warning(f"⚠️ Stage 3 failed: {e}")
