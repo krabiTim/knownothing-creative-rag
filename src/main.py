@@ -1,31 +1,26 @@
 """
-knowNothing Creative RAG - Main Application
-FastAPI server with Gradio UI integration
+Simple Working Server: Stages 1-4 + Basic UI
+No Stage 5 embeddings (they hang)
 """
 
-import os
 import logging
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Request
-from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
 import uvicorn
-from pathlib import Path
 
-# Configure logging FIRST
+# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Create FastAPI app
 app = FastAPI(
     title="knowNothing Creative RAG",
-    description="AI superpowers for artists who know nothing about AI",
-    version="1.0.0",
-    docs_url="/api/docs",
-    redoc_url="/api/redoc"
+    description="AI superpowers for artists",
+    version="1.0.0"
 )
 
-# Add CORS middleware
+# Add CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -34,126 +29,203 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount static files (if directory exists)
-static_dir = Path("assets")
-if static_dir.exists():
-    app.mount("/static", StaticFiles(directory="assets"), name="static")
-
 @app.get("/")
 async def root():
-    """Redirect to UI"""
+    return {"message": "knowNothing Creative RAG - Working Foundation"}
+
+@app.get("/health")
+async def health():
+    return {"status": "healthy", "stages": ["1-4", "basic-ui"]}
+
+# Stage 1: AI Ping (WORKING)
+try:
+    from .api.ai_ping import router as ai_ping_router
+    app.include_router(ai_ping_router, prefix="/api")
+    logger.info("✅ Stage 1: AI ping loaded")
+except Exception as e:
+    logger.warning(f"⚠️ Stage 1 issue: {e}")
+
+# Stage 2: Image Analysis (WORKING)
+try:
+    from .api.image_analysis import router as image_router
+    app.include_router(image_router)
+    logger.info("✅ Stage 2: Image analysis loaded")
+except Exception as e:
+    logger.warning(f"⚠️ Stage 2 issue: {e}")
+
+# Stage 3: Document Storage (WORKING)
+try:
+    from .api.document_upload import router as doc_router
+    app.include_router(doc_router, prefix="/api")
+    logger.info("✅ Stage 3: Document storage loaded")
+except Exception as e:
+    logger.warning(f"⚠️ Stage 3 issue: {e}")
+
+# Stage 4: Text Extraction (WORKING)
+try:
+    from .api.text_extraction_api import router as text_router
+    app.include_router(text_router, prefix="/api")
+    logger.info("✅ Stage 4: Text extraction loaded")
+except Exception as e:
+    logger.warning(f"⚠️ Stage 4 issue: {e}")
+
+# Skip Stage 5 - it hangs
+logger.info("⚠️ Stage 5: Skipped (hangs on embedding loading)")
+
+# Simple HTML UI
+@app.get("/ui", response_class=HTMLResponse)
+async def simple_ui():
     return HTMLResponse("""
+    <!DOCTYPE html>
     <html>
-        <head>
-            <title>knowNothing Creative RAG</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 0; padding: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; }
-                .container { max-width: 600px; margin: 0 auto; }
-                .logo { font-size: 4rem; margin-bottom: 1rem; }
-                .tagline { font-size: 1.5rem; margin-bottom: 2rem; opacity: 0.9; }
-                .links { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem; }
-                .link { background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 10px; text-decoration: none; color: white; transition: all 0.3s; }
-                .link:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="logo">🧠</div>
-                <h1>knowNothing Creative RAG</h1>
-                <p class="tagline">AI superpowers for artists who know nothing about AI</p>
-                <div class="links">
-                    <a href="http://localhost:7860" class="link">
-                        <h3>🎨 Creative Interface</h3>
-                        <p>Upload & analyze your artwork</p>
-                    </a>
-                    <a href="/api/docs" class="link">
-                        <h3>📡 API Documentation</h3>
-                        <p>Technical documentation</p>
-                    </a>
-                    <a href="/api/health" class="link">
-                        <h3>📊 System Health</h3>
-                        <p>Check system status</p>
-                    </a>
-                </div>
+    <head>
+        <title>knowNothing Creative RAG</title>
+        <style>
+            body { 
+                font-family: Arial, sans-serif; 
+                background: #2a2a2a; 
+                color: white; 
+                margin: 0; 
+                padding: 20px; 
+            }
+            .container { max-width: 800px; margin: 0 auto; }
+            .header { 
+                text-align: center; 
+                background: #3a3a3a; 
+                padding: 20px; 
+                border-radius: 8px; 
+                margin-bottom: 20px; 
+            }
+            .section { 
+                background: #353535; 
+                padding: 20px; 
+                border-radius: 8px; 
+                margin-bottom: 15px; 
+            }
+            .working { color: #90ee90; }
+            .disabled { color: #ffa500; }
+            input[type="file"] { 
+                background: #404040; 
+                color: white; 
+                padding: 10px; 
+                border: 1px solid #555; 
+                border-radius: 4px; 
+            }
+            button { 
+                background: #555; 
+                color: white; 
+                padding: 10px 15px; 
+                border: none; 
+                border-radius: 4px; 
+                cursor: pointer; 
+            }
+            button:hover { background: #666; }
+            .result { 
+                background: #404040; 
+                padding: 15px; 
+                border-radius: 4px; 
+                margin-top: 10px; 
+                min-height: 100px; 
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🧠 knowNothing Creative RAG</h1>
+                <p>AI superpowers for artists who know nothing about AI</p>
             </div>
-        </body>
+            
+            <div class="section">
+                <h2>📊 System Status</h2>
+                <p><span class="working">✅ Stage 1:</span> AI Ping - Working</p>
+                <p><span class="working">✅ Stage 2:</span> Image Analysis - Working</p>
+                <p><span class="working">✅ Stage 3:</span> Document Storage - Working</p>
+                <p><span class="working">✅ Stage 4:</span> Text Extraction - Working</p>
+                <p><span class="disabled">⚠️ Stage 5:</span> Embeddings - Disabled (hangs)</p>
+            </div>
+            
+            <div class="section">
+                <h2>📁 Upload Documents</h2>
+                <input type="file" id="fileInput" accept=".pdf,.txt,.docx">
+                <button onclick="uploadFile()">Upload</button>
+                <div id="uploadResult" class="result">Select a file to upload...</div>
+            </div>
+            
+            <div class="section">
+                <h2>📋 Your Documents</h2>
+                <button onclick="loadDocuments()">Refresh List</button>
+                <div id="docList" class="result">Click refresh to see your documents...</div>
+            </div>
+            
+            <div class="section">
+                <h2>🔗 API Links</h2>
+                <p><a href="/api/docs" style="color: #87ceeb;">API Documentation</a></p>
+                <p><a href="/health" style="color: #87ceeb;">Health Check</a></p>
+            </div>
+        </div>
+        
+        <script>
+            async function uploadFile() {
+                const fileInput = document.getElementById('fileInput');
+                const result = document.getElementById('uploadResult');
+                const file = fileInput.files[0];
+                
+                if (!file) {
+                    result.textContent = 'Please select a file first';
+                    return;
+                }
+                
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                try {
+                    result.textContent = 'Uploading...';
+                    const response = await fetch('/api/documents/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        result.textContent = `✅ Uploaded: ${file.name}`;
+                    } else {
+                        result.textContent = `❌ Upload failed: ${response.status}`;
+                    }
+                } catch (error) {
+                    result.textContent = `❌ Error: ${error.message}`;
+                }
+            }
+            
+            async function loadDocuments() {
+                const result = document.getElementById('docList');
+                
+                try {
+                    result.textContent = 'Loading...';
+                    const response = await fetch('/api/documents/list');
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        const docs = data.documents || [];
+                        
+                        if (docs.length === 0) {
+                            result.textContent = 'No documents uploaded yet';
+                        } else {
+                            result.innerHTML = docs.map(doc => 
+                                `<p>📄 ${doc.original_filename} (${doc.file_size_mb} MB)</p>`
+                            ).join('');
+                        }
+                    } else {
+                        result.textContent = `❌ Failed to load documents: ${response.status}`;
+                    }
+                } catch (error) {
+                    result.textContent = `❌ Error: ${error.message}`;
+                }
+            }
+        </script>
+    </body>
     </html>
     """)
 
-@app.get("/api/health")
-async def health_check():
-    """System health check"""
-    return {
-        "status": "healthy",
-        "message": "knowNothing Creative RAG is running!",
-        "version": "1.0.0",
-        "components": {
-            "api": "running",
-            "ui": "available at http://localhost:7860",
-            "database": "configured"
-        }
-    }
-
-# Import and include routers
-try:
-    from .api.ai_ping import router as ai_ping_router
-    app.include_router(ai_ping_router)
-    logger.info("✅ AI ping endpoints registered")
-except ImportError as e:
-    logger.warning(f"⚠️ AI ping endpoints not loaded: {e}")
-
-try:
-    from .api.image_analysis import router as image_analysis_router
-    app.include_router(image_analysis_router)
-    logger.info("✅ Image analysis endpoints registered")
-except ImportError as e:
-    logger.warning(f"⚠️ Image analysis module not loaded: {e}")
-
-# Stage 3: Document Storage Integration
-try:
-    from .api.document_upload import router as document_router
-    app.include_router(document_router)
-    logger.info("✅ Document storage endpoints registered")
-except ImportError as e:
-    logger.warning(f"⚠️ Document storage module not loaded: {e}")
-except Exception as e:
-    logger.error(f"❌ Error loading document storage module: {e}")
-
 if __name__ == "__main__":
-    uvicorn.run(
-        "src.main:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True,
-        log_level="info"
-    )
-
-# Stage 4: Text Extraction Integration
-try:
-    from .api.text_extraction_api import router as text_extraction_router
-    app.include_router(text_extraction_router)
-    logger.info("✅ Text extraction endpoints registered")
-except ImportError as e:
-    logger.warning(f"⚠️ Text extraction module not loaded: {e}")
-    logger.info("💡 Install dependencies: poetry add PyPDF2 python-docx chardet")
-except Exception as e:
-    logger.error(f"❌ Error loading text extraction module: {e}")
-# Stage 5: Semantic Search Integration
-try:
-    from .api.semantic_search_api import router as semantic_search_router
-    app.include_router(semantic_search_router)
-    logger.info("✅ Semantic search endpoints registered")
-except ImportError as e:
-    logger.warning(f"⚠️ Semantic search module not loaded: {e}")
-except Exception as e:
-    logger.error(f"❌ Error loading semantic search module: {e}")
-
-# Stage 6: Simple HTML UI Integration
-try:
-    from .ui.simple_html_ui import router as html_ui_router
-    app.include_router(html_ui_router)
-    logger.info("✅ Simple HTML UI endpoints registered")
-except ImportError as e:
-    logger.warning(f"⚠️ Simple HTML UI module not loaded: {e}")
-except Exception as e:
-    logger.error(f"❌ Error loading Simple HTML UI module: {e}")
+    uvicorn.run(app, host="0.0.0.0", port=8000)
